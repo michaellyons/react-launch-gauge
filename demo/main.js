@@ -96,12 +96,8 @@ class Demo extends React.Component {
     this.addAlert = this.addAlert.bind(this)
     this.handleResize = this.handleResize.bind(this)
     this.getSize = this.getSize.bind(this)
-    this.doStart = this.doStart.bind(this)
-    this.launchComplete = this.launchComplete.bind(this)
-    this.resetLaunch = this.resetLaunch.bind(this)
     this.handleDataChange = this.handleDataChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
-    this.changeLaunchProgress = this.changeLaunchProgress.bind(this)
   }
   componentDidMount() {
     this.handleResize();
@@ -124,10 +120,6 @@ class Demo extends React.Component {
       timeOut: 3000,
       extendedTimeOut: 3000
     });
-  }
-  resetLaunch() {
-    this.refs.mainChart.reset();
-    this.setState({launchProgress: 0, done: false});
   }
   handleDataChange(key, e) {
     let { ...state } = this.state;
