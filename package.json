@@ -1,0 +1,181 @@
+{
+  "name": "react-launch-gauge",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaellyons/react-launch-timeline.git"
+  },
+  "author": "Michael Lyons <mlyons000@gmail.com> (http://michaellyons.github.io)",
+  "scripts": {
+    "clean": "rimraf dist",
+    "clean:lib": "rimraf lib",
+    "babel": "babel ./src --out-dir ./lib",
+    "compile": "better-npm-run compile",
+    "compile:prod": "better-npm-run compile:prod",
+    "compile:demo": "better-npm-run compile:demo",
+    "lint": "eslint bin build config server src tests",
+    "lint:fix": "npm run lint -- --fix",
+    "start": "better-npm-run start",
+    "publish": "better-npm-run publish",
+    "dev": "better-npm-run dev",
+    "test": "better-npm-run test",
+    "test:dev": "npm run test -- --watch",
+    "deploy": "better-npm-run deploy",
+    "deploy:dev": "better-npm-run deploy:dev",
+    "deploy:prod": "better-npm-run deploy:prod"
+  },
+  "betterScripts": {
+    "publish": {
+      "command": "npm run clean:lib && npm run babel && npm publish",
+      "env": {
+        "NODE_ENV": "production",
+        "DEBUG": "publish:*"
+      }
+    },
+    "compile": {
+      "command": "node bin/compile",
+      "env": {
+        "DEBUG": "app:*"
+      }
+    },
+    "compile:demo": {
+      "command": "node bin/compile",
+      "env": {
+        "NODE_ENV": "demo",
+        "DEBUG": "app:*"
+      }
+    },
+    "compile:prod": {
+      "command": "node bin/compile",
+      "env": {
+        "NODE_ENV": "production",
+        "DEBUG": "app:*"
+      }
+    },
+    "dev": {
+      "command": "nodemon bin/dev-server --ignore dist --ignore coverage --ignore tests --ignore src",
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "app:*"
+      }
+    },
+    "deploy": {
+      "command": "npm run lint && npm run test && npm run clean && npm run compile",
+      "env": {
+        "DEBUG": "app:*"
+      }
+    },
+    "deploy:dev": {
+      "command": "npm run deploy",
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "app:*"
+      }
+    },
+    "deploy:demo": {
+      "command": "npm run deploy",
+      "env": {
+        "NODE_ENV": "demo",
+        "DEBUG": "app:*"
+      }
+    },
+    "deploy:prod": {
+      "command": "npm run deploy",
+      "env": {
+        "NODE_ENV": "production",
+        "DEBUG": "app:*"
+      }
+    },
+    "start": {
+      "command": "node bin/dev-server",
+      "env": {
+        "DEBUG": "app:*"
+      }
+    },
+    "test": {
+      "command": "node ./node_modules/karma/bin/karma start config/karma.config",
+      "env": {
+        "NODE_ENV": "test",
+        "DEBUG": "app:*"
+      }
+    }
+  },
+  "peerDependencies": {
+    "prop-types": "^15.5.8",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.2",
+    "babel-jest": "^19.0.0",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-istanbul": "^4.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "^6.23.0",
+    "better-npm-run": "^0.0.15",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "chai-enzyme": "^0.6.1",
+    "cheerio": "^0.22.0",
+    "compression": "^1.6.2",
+    "css-loader": "^0.28.0",
+    "cssnano": "^3.10.0",
+    "debug": "^2.6.3",
+    "enzyme": "^2.8.2",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard-react": "^4.3.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^6.10.3",
+    "eslint-plugin-standard": "^3.0.1",
+    "express": "^4.15.2",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "flow-bin": "^0.44.2",
+    "html-webpack-plugin": "^2.28.0",
+    "ip": "^1.1.5",
+    "jest": "^19.0.2",
+    "karma": "^1.6.0",
+    "karma-coverage": "^1.1.1",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.3",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-webpack-with-fast-source-maps": "^1.10.1",
+    "marked": "^0.3.6",
+    "mocha": "^3.2.0",
+    "moment": "^2.18.1",
+    "node-sass": "^4.5.2",
+    "npm-install-webpack-plugin": "^4.0.4",
+    "path": "^0.12.7",
+    "phantomjs": "^2.1.7",
+    "postcss-loader": "^1.3.3",
+    "react": "^15.5.4",
+    "react-addons-test-utils": "^15.5.1",
+    "react-dom": "^15.5.4",
+    "react-test-renderer": "^15.5.4",
+    "react-toastr": "^2.8.2",
+    "redbox-react": "^1.3.6",
+    "rimraf": "^2.6.1",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0",
+    "style-loader": "^0.16.1",
+    "webpack": "^2.4.1",
+    "webpack-dev-middleware": "^1.10.1",
+    "webpack-hot-middleware": "^2.18.0",
+    "webpack-merge": "^4.1.0",
+    "yargs": "^7.1.0"
+  },
+  "dependencies": {
+    "d3": "^4.8.0"
+  }
+}
