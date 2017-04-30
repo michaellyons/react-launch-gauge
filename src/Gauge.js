@@ -1,6 +1,6 @@
 import React from 'react'
 import GaugePath from './GaugePath'
-import * as d3 from 'd3'
+import { pie } from 'd3-shape'
 
 export default class Gauge extends React.Component {
   static propTypes = {
@@ -46,7 +46,7 @@ export default class Gauge extends React.Component {
     return this.refs.wrap.offsetWidth
   }
   componentWillMount () {
-    this.pie = d3.pie()
+    this.pie = pie()
     .value(function (d) { return d.number })
       .startAngle(1 * Math.PI)
       .endAngle(2.35 * Math.PI)

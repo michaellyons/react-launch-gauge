@@ -1,5 +1,5 @@
 import React from 'react'
-import * as d3 from 'd3'
+import { arc } from 'd3-shape'
 
 export default class GaugePath extends React.Component {
   static propTypes = {
@@ -25,7 +25,7 @@ export default class GaugePath extends React.Component {
     let outerRadius = radius - 10
     let innerRadius = outerRadius - thickness
 
-    this.arc = d3.arc()
+    this.arc = arc()
     .outerRadius(outerRadius)
     .innerRadius(innerRadius)
 

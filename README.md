@@ -46,8 +46,10 @@ Key | Required |  Type | Description
 ----- | ----- |  ----- | -----
 height | Y | Integer/String | This will set the total height of the chart.
 width | | Integer/String | This will set override the width of the chart.
+value | | Number | This will set override the width of the chart.
+high | | Number | This value determines the upper-region that fills red.
+max | | Number | This sets the ceiling of the chart's scale
 title |  | String | Title of the chart.
-mainBkg | | String | Background color for main chart area
 titleStyle |  | Object | Style for title text (SVG Text).
 progressStyle |  | Object | Style for progress bar (SVG rect)
 style |  | Object | Style that is passed to SVG.

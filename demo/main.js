@@ -66,7 +66,8 @@ const SECTION_TITLE_STYLE = {
 };
 const SECTION_STYLE = {
   padding: 10
-}
+};
+
 const COLOR_INPUT_STYLE = {
   position: 'relative',
   height: 34,
@@ -183,7 +184,7 @@ class Demo extends React.Component {
               </div>
               <div style={{marginBottom: 30, textAlign: 'center'}}>
                 <h3>{`Inspired by SpaceX's telemetry display.`}</h3>
-                <h4>{`Depends on D3.js`}</h4>
+                <h4>{`Depends on d3-shape from D3.js`}</h4>
               </div>
               <div style={{display: 'flex'}}>
               <Gauge
