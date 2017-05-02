@@ -1,20 +1,24 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import GaugePath from './GaugePath'
 import { pie } from 'd3-shape'
+import { easeLinear } from 'd3-ease'
+import { timer } from 'd3-timer'
+import { interpolate } from 'd3-interpolate'
 
 export default class Gauge extends React.Component {
   static propTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    max: React.PropTypes.number,
-    high: React.PropTypes.number,
-    value: React.PropTypes.number,
-    unit: React.PropTypes.string,
-    title: React.PropTypes.string,
-    titleStyle: React.PropTypes.object,
-    wrapStyle: React.PropTypes.object,
-    style: React.PropTypes.object,
-    id: React.PropTypes.string.isRequired
+    width: PropTypes.number,
+    height: PropTypes.number,
+    max: PropTypes.number,
+    high: PropTypes.number,
+    value: PropTypes.number,
+    unit: PropTypes.string,
+    title: PropTypes.string,
+    titleStyle: PropTypes.object,
+    wrapStyle: PropTypes.object,
+    style: PropTypes.object,
+    id: PropTypes.string.isRequired
   };
 
   static defaultProps = {
@@ -28,8 +32,13 @@ export default class Gauge extends React.Component {
     this.componentWillMount = this.componentWillMount.bind(this)
     this.getWidth = this.getWidth.bind(this)
     this.handleResize = this.handleResize.bind(this)
+    this._updateStateValue = this._updateStateValue.bind(this)
+    this.goTween = this.goTween.bind(this)
+    this.tweenUp = this.tweenUp.bind(this)
+    this.tweenDown = this.tweenDown.bind(this)
     this.state = {
-      width: props.width
+      width: props.width,
+      val: props.value
     }
   }
   componentDidMount () {
@@ -45,6 +54,22 @@ export default class Gauge extends React.Component {
   getWidth () {
     return this.refs.wrap.offsetWidth
   }
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.value !== this.props.value) {
+      // console.log("Will Change Value!");
+      // If we're growing, tween in the positive direction
+      var func;
+      if (nextProps.value > this.props.value) {
+        func = this.tweenUp;
+      } else {
+        func = this.tweenDown;
+      }
+      this.tween = func('val', this.state.val, nextProps.value).then((timer) => {
+        // console.log("Tween End!");
+        timer.stop();
+      })
+    }
+  }
   componentWillMount () {
     this.pie = pie()
     .value(function (d) { return d.number })
@@ -52,19 +77,94 @@ export default class Gauge extends React.Component {
       .endAngle(2.35 * Math.PI)
       .sort(null)
   }
-  render () {
-    let { height, width, wrapStyle, style, title, titleStyle, max, high, value } = this.props
+  _updateStateValue (prop, v) {
+    if (typeof v !== 'number') {
+      return false
+    }
+    if (this.state && this.state[prop] !== undefined) {
+      let state = {}
+      state[prop] = v
+      this.setState(state)
+    } else {
+      let { ...state } = this.state
+      state[prop] = v
+      this.setState(state)
+    }
+  }
+  tweenUp(prop, start, end, duration = 500, easing = 'Linear') {
+    return this.goTween(prop, start, end, duration, 1, easing)
+  }
+  tweenDown(prop, start, end, duration = 500, easing = 'Linear') {
+    return this.goTween(prop, start, end, duration, -1, easing)
+  }
+  goTween (prop, start, end, duration = 500, direction=1, easing = 'Linear') {
+    // console.log("Tween with Duration ", duration)
+    return new Promise((resolve, reject) => {
+      let i = interpolate(start, end)
+      let easeFun = easeLinear
 
+      /* The timer stops when the callback retuns a truthy value */
+      var time = timer((elapsed, d) => {
+        if (this._setStopped) { return true }
+        // return true;
+
+        let progress = easeFun(elapsed / duration)
+
+        let value = i(progress)
+
+        // num = value;
+        if (direction > 0) {
+          if (value >= end) {
+            // console.log("Hit the Step Point!")
+            this._updateStateValue(prop, end);
+            resolve(time);
+            return true
+          }
+        } else {
+          if (value <= end) {
+            // console.log("Hit the Step Point!")
+            this._updateStateValue(prop, end);
+            resolve(time);
+            return true
+          }
+        }
+
+        this._updateStateValue(prop, value)
+
+        // _self.setState({width: value})
+        if (elapsed > duration) {
+          this._updateStateValue(prop, end)
+          resolve(time)
+          return true
+        }
+      })
+    })
+  }
+  render () {
+    let {
+      height,
+      width,
+      wrapStyle,
+      style,
+      title,
+      titleStyle,
+      max,
+      high,
+      value
+    } = this.props
+    let {
+      val
+    } = this.state;
     let valueData = [
       { number: 0, color: '#aaa' },
-      { number: value, color: '#eee' },
-      { number: max - value, color: 'rgba(0,0,0,0)' }
-    ]
+      { number: val, color: '#eee' },
+      { number: max - val, color: 'rgba(0,0,0,0)' }
+    ];
     let baseData = [
       { number: 0, color: '#aaa' },
       { number: high, color: '#666' },
       { number: max - high, color: 'crimson' }
-    ]
+    ];
     return (
       <div style={wrapStyle} ref={'wrap'}>
         <div style={{ background: '#666', padding: '4px 12px', color: 'white', fontSize: 24, ...titleStyle }}>
@@ -93,7 +193,7 @@ export default class Gauge extends React.Component {
             fill={'#eee'}
             textAnchor={'middle'}
             alignmentBaseline={'central'}>
-            {this.props.value}
+            {Math.round(val)}
           </text>
           <text
             x={this.props.width * 0.60}

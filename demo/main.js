@@ -97,6 +97,7 @@ class Demo extends React.Component {
     this.addAlert = this.addAlert.bind(this)
     this.handleResize = this.handleResize.bind(this)
     this.getSize = this.getSize.bind(this)
+    this.setData = this.setData.bind(this)
     this.handleDataChange = this.handleDataChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
   }
@@ -122,9 +123,15 @@ class Demo extends React.Component {
       extendedTimeOut: 3000
     });
   }
+  setData(key, val) {
+    let { ...state } = this.state;
+    state[key] = val;
+    // console.log(key, e.target.value);
+    this.setState(state);
+  }
   handleDataChange(key, e) {
     let { ...state } = this.state;
-    state[key] = e.target.value;
+    state[key] = parseFloat(e.target.value);
     // console.log(key, e.target.value);
     this.setState(state);
   }
@@ -194,6 +201,20 @@ class Demo extends React.Component {
                 value={gaugeVal}
                 high={40000}
                 max={45000} />
+              </div>
+              <div>
+                <button
+                 onClick={this.setData.bind(null, 'gaugeVal', 0)}>
+                 0
+                 </button>
+                 <button
+                  onClick={this.setData.bind(null, 'gaugeVal', 10000)}>
+                  10000
+                  </button>
+                  <button
+                   onClick={this.setData.bind(null, 'gaugeVal', 20000)}>
+                   20000
+                   </button>
               </div>
               <input
                 type='range'

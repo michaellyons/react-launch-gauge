@@ -176,6 +176,9 @@
     "yargs": "^7.1.0"
   },
   "dependencies": {
-    "d3-shape": "^1.0.6"
+    "d3-ease": "^1.0.3",
+    "d3-interpolate": "^1.1.4",
+    "d3-shape": "^1.0.6",
+    "d3-timer": "^1.0.5"
   }
 }
