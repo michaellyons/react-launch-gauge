@@ -1,11 +1,11 @@
 {
   "name": "react-launch-gauge",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "main": "lib/index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michaellyons/react-launch-timeline.git"
+    "url": "git+https://github.com/michaellyons/react-launch-gauge.git"
   },
   "author": "Michael Lyons <mlyons000@gmail.com> (http://michaellyons.github.io)",
   "scripts": {
@@ -18,7 +18,7 @@
     "lint": "eslint bin build config server src tests",
     "lint:fix": "npm run lint -- --fix",
     "start": "better-npm-run start",
-    "prepublish": "better-npm-run publish",
+    "prepublish": "NODE_ENV=production npm run clean:lib && npm run babel",
     "dev": "better-npm-run dev",
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",

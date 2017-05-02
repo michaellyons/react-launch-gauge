@@ -12,10 +12,14 @@ export default class Gauge extends React.Component {
     height: PropTypes.number,
     max: PropTypes.number,
     high: PropTypes.number,
-    value: PropTypes.number,
+    value: PropTypes.any,
+    duration: PropTypes.number,
+    decimal: PropTypes.number,
     unit: PropTypes.string,
     title: PropTypes.string,
     titleStyle: PropTypes.object,
+    textStyle: PropTypes.object,
+    progressStyle: PropTypes.object,
     wrapStyle: PropTypes.object,
     style: PropTypes.object,
     id: PropTypes.string.isRequired
@@ -25,48 +29,40 @@ export default class Gauge extends React.Component {
     width: 200,
     height: 170,
     max: 100,
+    decimal: 2,
+    duration: 500,
     id: 'launch-gauge'
   };
   constructor (props) {
     super(props)
     this.componentWillMount = this.componentWillMount.bind(this)
-    this.getWidth = this.getWidth.bind(this)
-    this.handleResize = this.handleResize.bind(this)
     this._updateStateValue = this._updateStateValue.bind(this)
     this.goTween = this.goTween.bind(this)
     this.tweenUp = this.tweenUp.bind(this)
     this.tweenDown = this.tweenDown.bind(this)
     this.state = {
-      width: props.width,
       val: props.value
     }
   }
   componentDidMount () {
-    this.handleResize()
-    window.addEventListener('resize', this.handleResize)
   }
   componentWillUnmount () {
-    window.removeEventListener('resize', this.handleResize)
   }
-  handleResize () {
-    this.setState({ width: this.getWidth() })
-  }
-  getWidth () {
-    return this.refs.wrap.offsetWidth
-  }
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate (nextProps, nextState) {
     if (nextProps.value !== this.props.value) {
+      var parsedVal = parseFloat(this.props.value)
+      var parsedNext = parseFloat(nextProps.value)
       // console.log("Will Change Value!");
       // If we're growing, tween in the positive direction
-      var func;
-      if (nextProps.value > this.props.value) {
-        func = this.tweenUp;
+      var func
+      if (parsedNext > parsedVal) {
+        func = this.tweenUp
       } else {
-        func = this.tweenDown;
+        func = this.tweenDown
       }
-      this.tween = func('val', this.state.val, nextProps.value).then((timer) => {
+      this.tween = func('val', this.state.val, parsedNext, this.props.duration).then((timer) => {
         // console.log("Tween End!");
-        timer.stop();
+        timer.stop()
       })
     }
   }
@@ -91,13 +87,13 @@ export default class Gauge extends React.Component {
       this.setState(state)
     }
   }
-  tweenUp(prop, start, end, duration = 500, easing = 'Linear') {
+  tweenUp (prop, start, end, duration = 500, easing = 'Linear') {
     return this.goTween(prop, start, end, duration, 1, easing)
   }
-  tweenDown(prop, start, end, duration = 500, easing = 'Linear') {
+  tweenDown (prop, start, end, duration = 500, easing = 'Linear') {
     return this.goTween(prop, start, end, duration, -1, easing)
   }
-  goTween (prop, start, end, duration = 500, direction=1, easing = 'Linear') {
+  goTween (prop, start, end, duration = 500, direction = 1, easing = 'Linear') {
     // console.log("Tween with Duration ", duration)
     return new Promise((resolve, reject) => {
       let i = interpolate(start, end)
@@ -116,15 +112,15 @@ export default class Gauge extends React.Component {
         if (direction > 0) {
           if (value >= end) {
             // console.log("Hit the Step Point!")
-            this._updateStateValue(prop, end);
-            resolve(time);
+            this._updateStateValue(prop, end)
+            resolve(time)
             return true
           }
         } else {
           if (value <= end) {
             // console.log("Hit the Step Point!")
-            this._updateStateValue(prop, end);
-            resolve(time);
+            this._updateStateValue(prop, end)
+            resolve(time)
             return true
           }
         }
@@ -148,23 +144,25 @@ export default class Gauge extends React.Component {
       style,
       title,
       titleStyle,
+      textStyle,
+      progressStyle,
+      decimal,
       max,
-      high,
-      value
+      high
     } = this.props
     let {
       val
-    } = this.state;
+    } = this.state
     let valueData = [
       { number: 0, color: '#aaa' },
       { number: val, color: '#eee' },
       { number: max - val, color: 'rgba(0,0,0,0)' }
-    ];
+    ]
     let baseData = [
       { number: 0, color: '#aaa' },
       { number: high, color: '#666' },
       { number: max - high, color: 'crimson' }
-    ];
+    ]
     return (
       <div style={wrapStyle} ref={'wrap'}>
         <div style={{ background: '#666', padding: '4px 12px', color: 'white', fontSize: 24, ...titleStyle }}>
@@ -172,19 +170,20 @@ export default class Gauge extends React.Component {
         </div>
         <svg
           id={this.props.id}
-          width={this.state.width}
+          width={this.props.width}
           height={this.props.height}
           style={{ background: '#333', ...style }}>
           <GaugePath
-            width={this.state.width}
+            width={this.props.width}
             height={this.props.height}
             pie={this.pie}
             color={this.color}
             data={baseData} />
           <GaugePath
-            width={this.state.width}
+            width={this.props.width}
             height={this.props.height}
             pie={this.pie}
+            style={progressStyle}
             data={valueData} />
           <text
             x={this.props.width / 2}
@@ -192,8 +191,16 @@ export default class Gauge extends React.Component {
             fontSize={42}
             fill={'#eee'}
             textAnchor={'middle'}
-            alignmentBaseline={'central'}>
-            {Math.round(val)}
+            alignmentBaseline={'central'}
+            style={textStyle}>
+            {
+              val &&
+              val.toLocaleString(undefined,
+                {
+                  minimumFractionDigits: decimal,
+                  maximumFractionDigits: decimal
+                })
+            }
           </text>
           <text
             x={this.props.width * 0.60}
@@ -201,7 +208,8 @@ export default class Gauge extends React.Component {
             fontSize={24}
             fill={'#eee'}
             textAnchor={'right'}
-            alignmentBaseline={'central'}>
+            alignmentBaseline={'central'}
+            style={textStyle}>
             {this.props.unit}
           </text>
           <polygon

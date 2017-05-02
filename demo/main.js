@@ -9,6 +9,8 @@ var {ToastContainer} = ReactToastr; // This is a React Element.
 // For Non ES6...
 // var ToastContainer = ReactToastr.ToastContainer;
 var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
+import './mui-github-markdown.css';
+import './prop-type-description.css';
 
 const stringThing =
 '```javascript\n\
@@ -19,12 +21,17 @@ class AwesomeComponent extends Component {\n\
     super(props);\n\
   }\n\
   render() {\n\
-    let { dates } = this.props;\n\
     return <Gauge value={42} max={100} />\n\
   }\n\
 }\n\
 ```'
 
+const propertyTable =
+`
+Name| Type | Default | Description
+--- | --- | --- | ---
+title | string | | Title of the chart
+`
 const now = moment();
 const first_diff = now.date() - now.day();
 const first = first_diff == now.date() ? moment().date(first_diff - 6) : moment().date(first_diff + 1);
@@ -81,7 +88,13 @@ const CHECKBOX_INPUT_STYLE = {
   margin: '0px 36px',
   textAlign: 'center'
 };
-
+const BTN_STYLE = {
+  margin: '0px 8px'
+};
+const OPTION_STYLE = {
+};
+const OPTION_LABEL_STYLE = {
+};
 class Demo extends React.Component {
   constructor(props) {
     super(props);
@@ -131,7 +144,7 @@ class Demo extends React.Component {
   }
   handleDataChange(key, e) {
     let { ...state } = this.state;
-    state[key] = parseFloat(e.target.value);
+    state[key] = e.target.value;
     // console.log(key, e.target.value);
     this.setState(state);
   }
@@ -178,6 +191,33 @@ class Demo extends React.Component {
       title,
       mainBkg,
     } = this.state;
+    let generalOptions = this.buildTable([
+      {
+        name: 'Title Background',
+        key: 'titleStyle.backgroundColor',
+        component: this.buildColorDiv('titleBkg', titleBkg)
+      },
+      {
+        name: 'Main Background',
+        key: 'style.backgroundColor',
+        value: mainBkg,
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
+        name: 'Text Color',
+        key: 'textStyle.fill',
+        value: textColor,
+        component: this.buildColorDiv('textColor', textColor)
+      },
+      {
+        name: 'Progress Color',
+        key: 'progressStyle.fill',
+        value: progressColor,
+        component: this.buildColorDiv('progressColor', progressColor)
+      }
+    ].map((item, i) => {
+      return this.buildOptionRow(item, i);
+    }));
 
     return <div className='container' >
             <ToastContainer ref="toaster"
@@ -197,35 +237,59 @@ class Demo extends React.Component {
               <Gauge
                 title="SPEED"
                 unit="km/h"
+                style={{backgroundColor: mainBkg}}
+                titleStyle={{backgroundColor: titleBkg}}
+                progressStyle={{fill: progressColor}}
                 wrapStyle={{margin: 'auto'}}
                 value={gaugeVal}
+                decimal={0}
                 high={40000}
                 max={45000} />
               </div>
-              <div>
+              <div style={{textAlign: 'center'}}>
                 <button
+                 style={BTN_STYLE}
+                 className='btn btn-primary'
                  onClick={this.setData.bind(null, 'gaugeVal', 0)}>
                  0
                  </button>
                  <button
-                  onClick={this.setData.bind(null, 'gaugeVal', 10000)}>
+                 style={BTN_STYLE}
+                 className='btn btn-primary'
+                 onClick={this.setData.bind(null, 'gaugeVal', 10000)}>
                   10000
-                  </button>
-                  <button
-                   onClick={this.setData.bind(null, 'gaugeVal', 20000)}>
+                 </button>
+                 <button
+                 style={BTN_STYLE}
+                  className='btn btn-primary'
+                  onClick={this.setData.bind(null, 'gaugeVal', 20000)}>
                    20000
-                   </button>
+                  </button>
               </div>
               <input
                 type='range'
+                style={{padding: 10, maxWidth: 400, margin: 'auto'}}
                 value={gaugeVal}
                 max={45000}
                 onChange={this.handleDataChange.bind(null, 'gaugeVal')} />
-              <div dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
+                <div style={{margin: '10px 0'}}dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
+
+              <div className='col-xs-12' style={SECTION_STYLE}>
+                <h4 style={SECTION_TITLE_STYLE}>General</h4>
+                {generalOptions}
+              </div>
             </div>
+
           </div>
   }
 }
+// <div
+// className='propTypeDescription'>
+//   <div
+//   className='markdown-body'
+//   style={{width: '100%', margin: '10px 0'}}
+//   dangerouslySetInnerHTML={{__html: marked(propertyTable)}} />
+// </div>
 // ========================================================
 // Render Setup
 // ========================================================
