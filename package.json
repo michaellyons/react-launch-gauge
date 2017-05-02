@@ -1,6 +1,6 @@
 {
   "name": "react-launch-gauge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "lib/index.js",
   "license": "MIT",
   "repository": {
@@ -18,7 +18,7 @@
     "lint": "eslint bin build config server src tests",
     "lint:fix": "npm run lint -- --fix",
     "start": "better-npm-run start",
-    "publish": "better-npm-run publish",
+    "prepublish": "better-npm-run publish",
     "dev": "better-npm-run dev",
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",
@@ -28,7 +28,7 @@
   },
   "betterScripts": {
     "publish": {
-      "command": "npm run clean:lib && npm run babel && npm publish",
+      "command": "npm run clean:lib && npm run babel",
       "env": {
         "NODE_ENV": "production",
         "DEBUG": "publish:*"
