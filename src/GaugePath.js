@@ -8,8 +8,7 @@ export default class GaugePath extends React.Component {
     height:PropTypes.number,
     thickness:PropTypes.number,
     data:PropTypes.array,
-    pie:PropTypes.func,
-    style: PropTypes.object
+    pie:PropTypes.func
   };
   static defaultProps = {
     thickness: 10
@@ -36,7 +35,7 @@ export default class GaugePath extends React.Component {
   createChart (_self) {
     var paths = (this.props.pie(this.props.data)).map(function (d, i) {
       var fill = _self.props.data[i].color || _self.props.fill || '#666'
-      var style = i === 1 ? this.props.style : {}
+      var style = i === 1 ? _self.props.style : {}
       return (
         <path fill={fill} d={_self.arc(d)} key={i} style={style} />
       )

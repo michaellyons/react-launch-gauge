@@ -18,6 +18,7 @@ export default class Gauge extends React.Component {
     unit: PropTypes.string,
     title: PropTypes.string,
     titleStyle: PropTypes.object,
+    titleClass: PropTypes.string,
     textStyle: PropTypes.object,
     progressStyle: PropTypes.object,
     wrapStyle: PropTypes.object,
@@ -144,6 +145,7 @@ export default class Gauge extends React.Component {
       style,
       title,
       titleStyle,
+      titleClass,
       textStyle,
       progressStyle,
       decimal,
@@ -164,8 +166,14 @@ export default class Gauge extends React.Component {
       { number: max - high, color: 'crimson' }
     ]
     return (
-      <div style={wrapStyle} ref={'wrap'}>
-        <div style={{ background: '#666', padding: '4px 12px', color: 'white', fontSize: 24, ...titleStyle }}>
+      <div style={{ width: width, ...wrapStyle }} ref={'wrap'}>
+        <div
+          className={titleClass}
+          style={
+           Object.assign(
+             {},
+             (!titleClass && { background: '#666', padding: '4px 12px', color: 'white', fontSize: 24 }),
+             titleStyle)}>
           {title}
         </div>
         <svg
@@ -212,6 +220,14 @@ export default class Gauge extends React.Component {
             style={textStyle}>
             {this.props.unit}
           </text>
+          <rect
+            x={1}
+            y={1}
+            width={width - 2}
+            height={height - 2}
+            fill={'transparent'}
+            stroke={'rgb(170, 170, 170)'}
+            strokeWidth={'2px'} />
           <polygon
             points={`${width * 0.75},${height} \
             ${width * 0.8},${height * 0.95}  ${width},${height * 0.95} \

@@ -1,6 +1,31 @@
 .button {
 
 }
+
+.fadeTitle {
+  padding: 4px 12px;
+  color: white;
+  font-size: 20px;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#333333+0,999999+99 */
+  background: #333333; /* Old browsers */
+  background: -moz-linear-gradient(left, #333333 0%, #999999 99%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #333333 0%,#999999 99%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #333333 0%,#999999 99%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333333', endColorstr='#999999',GradientType=1 ); /* IE6-9 */
+}
+.fadeTitleAfter {
+  position: relative;
+}
+.fadeTitleAfter:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -28px;
+  border-top: 18px solid #333333;
+  border-left: 14px solid transparent;
+  border-bottom: 18px solid transparent;
+  border-right: 14px solid #333333;
+}
 /* The switch - the box around the slider */
 .switch {
   position: relative;

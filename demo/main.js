@@ -233,18 +233,31 @@ class Demo extends React.Component {
                 <h3>{`Inspired by SpaceX's telemetry display.`}</h3>
                 <h4>{`Depends on d3-shape from D3.js`}</h4>
               </div>
-              <div style={{display: 'flex'}}>
+              <div style={{display: 'flex', justifyContent: 'center'}}>
               <Gauge
                 title="SPEED"
                 unit="km/h"
+                titleClass='fadeTitle'
                 style={{backgroundColor: mainBkg}}
                 titleStyle={{backgroundColor: titleBkg}}
                 progressStyle={{fill: progressColor}}
-                wrapStyle={{margin: 'auto'}}
+                wrapStyle={{margin: ''}}
                 value={gaugeVal}
                 decimal={0}
                 high={40000}
                 max={45000} />
+              <Gauge
+                title="ALTITUDE"
+                unit="km"
+                titleClass='fadeTitle fadeTitleAfter'
+                style={{backgroundColor: mainBkg}}
+                titleStyle={{backgroundColor: titleBkg}}
+                progressStyle={{fill: progressColor}}
+                wrapStyle={{margin: ''}}
+                value={gaugeVal / 50}
+                decimal={0}
+                high={1000}
+                max={1100} />
               </div>
               <div style={{textAlign: 'center'}}>
                 <button
