@@ -1,7 +1,11 @@
 .button {
 
 }
-
+.glassBkg {
+  background: rgba(0,0,0,0.5);
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
 .fadeTitle {
   padding: 4px 12px;
   color: white;

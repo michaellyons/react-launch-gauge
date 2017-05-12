@@ -219,11 +219,12 @@ class Demo extends React.Component {
       return this.buildOptionRow(item, i);
     }));
 
-    return <div className='container' >
+    return <div style={{color: 'white', backgroundImage: 'url("./public/launch.jpg")', backgroundSize: 'cover'}}>
+            <div className='container'>
             <ToastContainer ref="toaster"
                         toastMessageFactory={ToastMessageFactory}
                         className="toast-top-left" />
-            <div style={{ transition: 'all 0.9s ease-out', position: 'relative', color: '#000', zIndex: 1, paddingBottom: 120}}>
+            <div style={{ transition: 'all 0.9s ease-out', position: 'relative', zIndex: 1, paddingBottom: 120}}>
               <div style={{marginBottom: 30, textAlign: 'center'}} >
                 <h1>React Launch Gauge</h1>
                 <h4>{`npm install react-launch-gauge`}</h4>
@@ -286,13 +287,14 @@ class Demo extends React.Component {
                 max={45000}
                 onChange={this.handleDataChange.bind(null, 'gaugeVal')} />
                 <div style={{margin: '10px 0'}}dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
-
-              <div className='col-xs-12' style={SECTION_STYLE}>
+              <div className='glassBkg'>
+              <div className='' style={SECTION_STYLE}>
                 <h4 style={SECTION_TITLE_STYLE}>General</h4>
                 {generalOptions}
               </div>
+              </div>
             </div>
-
+            </div>
           </div>
   }
 }
