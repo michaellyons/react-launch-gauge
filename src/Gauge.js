@@ -13,16 +13,22 @@ export default class Gauge extends React.Component {
     max: PropTypes.number,
     high: PropTypes.number,
     value: PropTypes.any,
-    duration: PropTypes.number,
     decimal: PropTypes.number,
+    startAngle: PropTypes.number,
+    endAngle: PropTypes.number,
     unit: PropTypes.string,
     title: PropTypes.string,
     titleStyle: PropTypes.object,
     titleClass: PropTypes.string,
     textStyle: PropTypes.object,
+    mainBkg: PropTypes.string,
+    progressBkg: PropTypes.string,
+    progressColor: PropTypes.string,
+    highColor: PropTypes.string,
     progressStyle: PropTypes.object,
     wrapStyle: PropTypes.object,
     style: PropTypes.object,
+    duration: PropTypes.number,
     id: PropTypes.string.isRequired
   };
 
@@ -30,8 +36,15 @@ export default class Gauge extends React.Component {
     width: 200,
     height: 170,
     max: 100,
+    high: 90,
+    startAngle: 180,
+    endAngle: 420,
     decimal: 2,
     duration: 500,
+    progressColor: '#FFFFFF',
+    progressBkg: '#666',
+    mainBkg: '#333',
+    highColor: 'crimson',
     id: 'launch-gauge'
   };
   constructor (props) {
@@ -70,8 +83,8 @@ export default class Gauge extends React.Component {
   componentWillMount () {
     this.pie = pie()
     .value(function (d) { return d.number })
-      .startAngle(1 * Math.PI)
-      .endAngle(2.35 * Math.PI)
+      .startAngle(this.props.startAngle / 180 * Math.PI)
+      .endAngle(this.props.endAngle / 180 * Math.PI)
       .sort(null)
   }
   _updateStateValue (prop, v) {
@@ -143,11 +156,15 @@ export default class Gauge extends React.Component {
       width,
       wrapStyle,
       style,
+      mainBkg,
       title,
       titleStyle,
       titleClass,
       textStyle,
       progressStyle,
+      progressBkg,
+      progressColor,
+      highColor,
       decimal,
       max,
       high
@@ -156,14 +173,14 @@ export default class Gauge extends React.Component {
       val
     } = this.state
     let valueData = [
-      { number: 0, color: '#aaa' },
-      { number: val, color: '#eee' },
+      { number: 0, color: 'none' },
+      { number: val, color: progressColor },
       { number: max - val, color: 'rgba(0,0,0,0)' }
     ]
     let baseData = [
-      { number: 0, color: '#aaa' },
-      { number: high, color: '#666' },
-      { number: max - high, color: 'crimson' }
+      { number: 0, color: 'none' },
+      { number: high, color: progressBkg },
+      { number: max - high, color: highColor }
     ]
     return (
       <div style={{ width: width, ...wrapStyle }} ref={'wrap'}>
@@ -180,7 +197,7 @@ export default class Gauge extends React.Component {
           id={this.props.id}
           width={this.props.width}
           height={this.props.height}
-          style={{ background: '#333', ...style }}>
+          style={{ background: mainBkg, ...style }}>
           <GaugePath
             width={this.props.width}
             height={this.props.height}

@@ -92,6 +92,8 @@ const BTN_STYLE = {
   margin: '0px 8px'
 };
 const OPTION_STYLE = {
+  borderBottom: '1px solid lightgrey'
+
 };
 const OPTION_LABEL_STYLE = {
 };
@@ -161,8 +163,23 @@ class Demo extends React.Component {
               <td style={OPTION_LABEL_STYLE}>{row.name}</td>
            </tr>
   }
-  buildTable(rows) {
-    return <table style={{width: '100%'}}>
+  buildPropRow(row, i) {
+    return <tr key={i} style={OPTION_STYLE}>
+              <td className='col-xs-2' style={{color: '#266d90'}}>{row.key}</td>
+              <td className='col-xs-2' style={{color: '#bf2a5c'}}>{row.type}</td>
+              <td style={OPTION_LABEL_STYLE}>{row.default}</td>
+              <td style={OPTION_LABEL_STYLE}><div
+                style={{margin: ''}}
+                dangerouslySetInnerHTML={{__html: marked(row.desc || '')}} /></td>
+           </tr>
+  }
+  buildTable(header, rows) {
+    return <table className='displayTable' style={{padding: 20, width: '100%'}}>
+              <thead>
+              <tr>
+               {header.map((h, i) => <th style={{paddingLeft: 10}} key={i}>{h}</th>)}
+               </tr>
+              </thead>
               <tbody>
                 {rows}
               </tbody>
@@ -191,6 +208,137 @@ class Demo extends React.Component {
       title,
       mainBkg,
     } = this.state;
+    let generalProps = this.buildTable(['Name', 'Type', 'Default', 'Description'], [
+      {
+        name: 'Title',
+        type: 'String',
+        key: 'title',
+        desc: 'Title of the Chart.',
+        component: this.buildColorDiv('titleBkg', titleBkg)
+      },
+      {
+        name: 'value',
+        key: 'value',
+        type: 'number',
+        desc: 'Value to display in the gauge.',
+        value: mainBkg,
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
+        name: 'high',
+        key: 'high',
+        type: 'number',
+        desc: 'Value where progressBkg color changes.',
+        value: mainBkg,
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
+        name: 'max',
+        key: 'max',
+        type: 'number',
+        default: '100',
+        desc: 'Sets the Max for input domain. (Determines scale)',
+        value: mainBkg,
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
+        name: 'width',
+        key: 'width',
+        type: 'string|number',
+        default: '200',
+        desc: 'Width of the Container div',
+        component: null
+      },
+      {
+        name: 'height',
+        key: 'height',
+        default: '170',
+        type: 'string|number',
+        desc: 'Height of the Container div',
+        component: null
+      },
+      {
+        name: 'startAngle',
+        key: 'startAngle',
+        default: '180',
+        type: 'number',
+        desc: 'Starting angle of the gauge.',
+        component: null
+      },
+      {
+        name: 'endAngle',
+        key: 'endAngle',
+        default: '420',
+        type: 'number',
+        desc: 'Ending angle of the gauge.',
+        component: null
+      },
+      {
+        name: 'progressBkg',
+        key: 'progressBkg',
+        type: 'string',
+        default: '#666666',
+        desc: 'Color for the progress\'s background.',
+        value: mainBkg,
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
+        name: 'progressColor',
+        key: 'progressColor',
+        type: 'string',
+        default: '#FFFFFF',
+        desc: 'The color of the primary progress. (Default is white.)',
+        component: null
+      },
+      {
+        name: 'highColor',
+        key: 'highColor',
+        type: 'string',
+        default: 'crimson',
+        desc: 'The color of the gauge top color. (Default is equal to lineColor.)',
+        component: null
+      },
+      {
+        name: 'id',
+        key: 'id',
+        type: 'string',
+        default: '',
+        desc: 'The string id applied to the SVG component',
+        component: null
+      },
+      {
+        name: 'mainBkg',
+        key: 'mainBkg',
+        type: 'string',
+        default: '#333333',
+        desc: 'Color for the chart\'s background.',
+        value: mainBkg,
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
+        key: 'style',
+        type: 'object',
+        default: ``,
+        desc: 'Override the default Chart style object.',
+        component: null
+      },
+      {
+        key: 'titleStyle',
+        type: 'object',
+        default: ``,
+        desc: 'Override the default Title style object.',
+        component: null
+      },
+      {
+        key: 'containerStyle',
+        type: 'object',
+        default: ``,
+        desc: 'Override the default container style object.',
+        component: null
+      }
+    ].map((item, i) => {
+      return this.buildPropRow(item, i);
+    }));
     let generalOptions = this.buildTable([
       {
         name: 'Title Background',
@@ -254,10 +402,9 @@ class Demo extends React.Component {
                 style={{backgroundColor: mainBkg}}
                 titleStyle={{backgroundColor: titleBkg}}
                 progressStyle={{fill: progressColor}}
-                wrapStyle={{margin: ''}}
                 value={gaugeVal / 50}
                 decimal={0}
-                high={1000}
+                high={1100}
                 max={1100} />
               </div>
               <div style={{textAlign: 'center'}}>
@@ -286,11 +433,13 @@ class Demo extends React.Component {
                 value={gaugeVal}
                 max={45000}
                 onChange={this.handleDataChange.bind(null, 'gaugeVal')} />
-                <div style={{margin: '10px 0'}}dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
-              <div className='glassBkg'>
+              <div className='paper' style={{color: 'black'}}>
               <div className='' style={SECTION_STYLE}>
-                <h4 style={SECTION_TITLE_STYLE}>General</h4>
-                {generalOptions}
+                <h3 style={SECTION_TITLE_STYLE}>{"<Gauge />"}</h3>
+                <h4 style={SECTION_TITLE_STYLE}>{"Usage"}</h4>
+                <div style={{margin: '10px 0'}}dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
+                <h4 style={SECTION_TITLE_STYLE}>{"Props"}</h4>
+                {generalProps}
               </div>
               </div>
             </div>

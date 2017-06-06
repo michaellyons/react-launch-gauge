@@ -1,9 +1,16 @@
-.button {
-
+p {
+  margin: 0;
+  padding: 0;
 }
 .glassBkg {
   background: rgba(0,0,0,0.5);
   margin-bottom: 20px;
+  border-radius: 4px;
+}
+.paper {
+  background: whitesmoke;
+  padding: 20px;
+  color: charcoal;
   border-radius: 4px;
 }
 .fadeTitle {
@@ -87,4 +94,10 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+.displayTable {
+  font-size: 1.2em;
+}
+.displayTable td {
+  padding: 10px;
 }
