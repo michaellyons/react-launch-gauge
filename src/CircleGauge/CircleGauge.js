@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import GaugePath from './GaugePath'
+import GaugeArc from './GaugeArc'
 import { pie } from 'd3-shape'
 import { easeLinear } from 'd3-ease'
 import { timer } from 'd3-timer'
 import { interpolate } from 'd3-interpolate'
 
-export default class Gauge extends React.Component {
+export default class CircleGauge extends React.Component {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
@@ -17,6 +17,7 @@ export default class Gauge extends React.Component {
     startAngle: PropTypes.number,
     endAngle: PropTypes.number,
     unit: PropTypes.string,
+    labelPos: PropTypes.string,
     title: PropTypes.string,
     titleStyle: PropTypes.object,
     titleClass: PropTypes.string,
@@ -41,6 +42,7 @@ export default class Gauge extends React.Component {
     endAngle: 420,
     decimal: 2,
     duration: 500,
+    labelPos: 'right',
     progressColor: '#FFFFFF',
     progressBkg: '#666',
     mainBkg: '#333',
@@ -150,6 +152,17 @@ export default class Gauge extends React.Component {
       })
     })
   }
+  getLabelPos (pos) {
+    switch (pos) {
+      case 'left':
+        return 0.4
+      case 'center':
+      case 'middle':
+        return 0.5
+      default:
+        return 0.6
+    }
+  }
   render () {
     let {
       height,
@@ -163,6 +176,7 @@ export default class Gauge extends React.Component {
       textStyle,
       progressStyle,
       progressBkg,
+      labelPos,
       progressColor,
       highColor,
       decimal,
@@ -182,29 +196,32 @@ export default class Gauge extends React.Component {
       { number: high, color: progressBkg },
       { number: max - high, color: highColor }
     ]
+    var titleDiv = title
+              ? <div
+                className={titleClass}
+                style={
+                 Object.assign(
+                   {},
+                   (!titleClass && { background: '#666', padding: '4px 12px', color: 'white', fontSize: 24 }),
+                   titleStyle)}>
+                {title}
+              </div>
+              : null
     return (
       <div style={{ width: width, ...wrapStyle }} ref={'wrap'}>
-        <div
-          className={titleClass}
-          style={
-           Object.assign(
-             {},
-             (!titleClass && { background: '#666', padding: '4px 12px', color: 'white', fontSize: 24 }),
-             titleStyle)}>
-          {title}
-        </div>
+        {titleDiv}
         <svg
           id={this.props.id}
           width={this.props.width}
           height={this.props.height}
           style={{ background: mainBkg, ...style }}>
-          <GaugePath
+          <GaugeArc
             width={this.props.width}
             height={this.props.height}
             pie={this.pie}
             color={this.color}
             data={baseData} />
-          <GaugePath
+          <GaugeArc
             width={this.props.width}
             height={this.props.height}
             pie={this.pie}
@@ -213,7 +230,7 @@ export default class Gauge extends React.Component {
           <text
             x={this.props.width / 2}
             y={this.props.height / 2}
-            fontSize={42}
+            fontSize={36}
             fill={'#eee'}
             textAnchor={'middle'}
             alignmentBaseline={'central'}
@@ -228,11 +245,11 @@ export default class Gauge extends React.Component {
             }
           </text>
           <text
-            x={this.props.width * 0.60}
+            x={this.props.width * this.getLabelPos(labelPos)}
             y={this.props.height - 40}
             fontSize={24}
             fill={'#eee'}
-            textAnchor={'right'}
+            textAnchor={'middle'}
             alignmentBaseline={'central'}
             style={textStyle}>
             {this.props.unit}

@@ -1,71 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Gauge from '../src';
+import { CircleGauge, BarGauge } from '../src';
 import moment from 'moment';
 import marked from 'marked';
+import ParallaxWrap from './Parallax';
+import LazyImage from './LazyImage';
 import './main.css';
-var ReactToastr = require("react-toastr");
-var {ToastContainer} = ReactToastr; // This is a React Element.
+import barProps from './BarProps';
+
 // For Non ES6...
 // var ToastContainer = ReactToastr.ToastContainer;
-var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
 import './mui-github-markdown.css';
 import './prop-type-description.css';
 
 const stringThing =
 '```javascript\n\
-import Gauge from \'react-launch-gauge\' \
+import { CircleGauge } from \'react-launch-gauge\' \
 \n\
 class AwesomeComponent extends Component {\n\
   constructor(props) {\n\
     super(props);\n\
   }\n\
   render() {\n\
-    return <Gauge value={42} max={100} />\n\
+    return <CircleGauge value={42} max={100} />\n\
   }\n\
 }\n\
 ```'
-
-const propertyTable =
-`
-Name| Type | Default | Description
---- | --- | --- | ---
-title | string | | Title of the chart
-`
-const now = moment();
-const first_diff = now.date() - now.day();
-const first = first_diff == now.date() ? moment().date(first_diff - 6) : moment().date(first_diff + 1);
-
-const THIS_WEEK = [];
-
-// We'll need a week's worth of days
-for (var i = 0; i <= 7; i++) {
-  // if (i == 2) continue;
-  var date = moment(first).add(i, 'days');
-  THIS_WEEK.push({
-    name: date.format('ddd'),
-    date: date.format('MM-DD-YYYY'),
-    onComplete: () => {console.log("Woah!")}
-  })
-}
-
-// Set Launch Time to abritrary date in future
-const launchTime = moment('04-20-2020', 'MM-DD-YYYY');
-
-// Set them Launch Items with T -/+ liftoff times
-const timeLineItems = [
-  [-15, 'INTERNAL'],
-  [-5, 'STARTUP'],
-  [0, 'LIFTOFF'],
-  [15, 'MAX-Q'],
-  [25, 'MECO'],
-  [40, 'BOOSTBACK BURN'],
-  [50, 'ENTRY BURN'],
-  [55, 'STAGE 1 LANDING'],
-  [65, 'PAYLOAD ORBIT'],
-  [70, 'PROFIT']
-];
-
+const BarGaugeCodeString =
+'```javascript\n\
+import { BarGauge } from \'react-launch-gauge\' \
+\n\
+class AwesomeComponent extends Component {\n\
+  constructor(props) {\n\
+    super(props);\n\
+  }\n\
+  render() {\n\
+    return <BarGauge value={42} max={100} />\n\
+  }\n\
+}\n\
+```'
 const SECTION_TITLE_STYLE = {
   margin: '0px 0px 20px 0px',
   padding: 10,
@@ -95,28 +68,34 @@ const OPTION_STYLE = {
   borderBottom: '1px solid lightgrey'
 
 };
-const OPTION_LABEL_STYLE = {
-};
+
+function getRandomInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
 class Demo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       title: 'This Week',
       gaugeVal: 4200,
+      showCode: {},
+      bars: [],
       titleBkg: '#111111',
       textColor: '#FFFFFF',
       labelColor: '#FFFFFF',
       progressColor: '#EEEEEE',
       mainBkg: '#263238',
     };
-    this.addAlert = this.addAlert.bind(this)
     this.handleResize = this.handleResize.bind(this)
     this.getSize = this.getSize.bind(this)
     this.setData = this.setData.bind(this)
+    this.toggleCode = this.toggleCode.bind(this)
+    this.buildPropTable = this.buildPropTable.bind(this)
     this.handleDataChange = this.handleDataChange.bind(this)
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
+    this.getRandoms = this.getRandoms.bind(this)
   }
   componentDidMount() {
+    this.getRandoms();
     this.handleResize();
     window.addEventListener('resize', this.handleResize)
   }
@@ -126,17 +105,14 @@ class Demo extends React.Component {
   handleResize () {
     this.setState({ ...this.getSize() })
   }
+  toggleCode(key) {
+    let { ...state } = this.state;
+    let { showCode } = state;
+    showCode[key] = !showCode[key];
+    this.setState({showCode});
+  }
   getSize () {
     return {w: window.innerWidth, h: window.innerHeight}
-  }
-  addAlert (title = 'Toast!', message = 'This is a toast!') {
-    this.refs.toaster.success(
-    message,
-    title,
-    {
-      timeOut: 3000,
-      extendedTimeOut: 3000
-    });
   }
   setData(key, val) {
     let { ...state } = this.state;
@@ -150,25 +126,12 @@ class Demo extends React.Component {
     // console.log(key, e.target.value);
     this.setState(state);
   }
-  handleCheckboxChange(key) {
-    let { ...state } = this.state;
-    state[key] = !state[key];
-    // console.log(key, state[key]);
-    this.setState(state);
-  }
-  buildOptionRow(row, i) {
-    return <tr key={i} style={OPTION_STYLE}>
-              <td className='col-xs-2'>{row.component}</td>
-              <td className='col-xs-2'>{row.key}</td>
-              <td style={OPTION_LABEL_STYLE}>{row.name}</td>
-           </tr>
-  }
   buildPropRow(row, i) {
     return <tr key={i} style={OPTION_STYLE}>
-              <td className='col-xs-2' style={{color: '#266d90'}}>{row.key}</td>
-              <td className='col-xs-2' style={{color: '#bf2a5c'}}>{row.type}</td>
-              <td style={OPTION_LABEL_STYLE}>{row.default}</td>
-              <td style={OPTION_LABEL_STYLE}><div
+              <td className='col-xs-2 propKey'>{row.key}</td>
+              <td className='col-xs-2 propType'>{row.type}</td>
+              <td>{row.default}</td>
+              <td><div
                 style={{margin: ''}}
                 dangerouslySetInnerHTML={{__html: marked(row.desc || '')}} /></td>
            </tr>
@@ -194,15 +157,32 @@ class Demo extends React.Component {
             onChange={this.handleDataChange.bind(null, key)} />
       </div>
   }
+  getRandoms() {
+    let bars = [
+      getRandomInRange(0, 100),
+      getRandomInRange(0, 100),
+      getRandomInRange(0, 100)
+    ]
+    this.setState({
+      gaugeVal: getRandomInRange(0, 45000),
+      bars
+    })
+  }
+  buildPropTable(rows) {
+    let propRows = rows.map((row, i) => this.buildPropRow(row, i));
+    return this.buildTable(['Name', 'Type', 'Default', 'Description'], propRows)
+  }
   render() {
 
     let {
       h,
       w,
       titleBkg,
+      showCode,
       progressColor,
       textColor,
       done,
+      bars,
       launch,
       gaugeVal,
       title,
@@ -255,7 +235,6 @@ class Demo extends React.Component {
         default: '170',
         type: 'string|number',
         desc: 'Height of the Container div',
-        component: null
       },
       {
         name: 'startAngle',
@@ -339,39 +318,17 @@ class Demo extends React.Component {
     ].map((item, i) => {
       return this.buildPropRow(item, i);
     }));
-    let generalOptions = this.buildTable([
-      {
-        name: 'Title Background',
-        key: 'titleStyle.backgroundColor',
-        component: this.buildColorDiv('titleBkg', titleBkg)
-      },
-      {
-        name: 'Main Background',
-        key: 'style.backgroundColor',
-        value: mainBkg,
-        component: this.buildColorDiv('mainBkg', mainBkg)
-      },
-      {
-        name: 'Text Color',
-        key: 'textStyle.fill',
-        value: textColor,
-        component: this.buildColorDiv('textColor', textColor)
-      },
-      {
-        name: 'Progress Color',
-        key: 'progressStyle.fill',
-        value: progressColor,
-        component: this.buildColorDiv('progressColor', progressColor)
-      }
-    ].map((item, i) => {
-      return this.buildOptionRow(item, i);
-    }));
+    let barGaugePropTable = this.buildPropTable(barProps);
 
-    return <div style={{color: 'white', backgroundImage: 'url("./public/launch.jpg")', backgroundSize: 'cover'}}>
+    return <div style={{color: 'white'}}>
+            <div style={{width: '100%', position: 'fixed', top: 0, left: 0}}>
+                <ParallaxWrap
+                  full={true}
+                  background={<LazyImage src={'./public/launch.jpg'} />}
+                  style={{ minHeight: h }}>
+                  </ParallaxWrap>
+            </div>
             <div className='container'>
-            <ToastContainer ref="toaster"
-                        toastMessageFactory={ToastMessageFactory}
-                        className="toast-top-left" />
             <div style={{ transition: 'all 0.9s ease-out', position: 'relative', zIndex: 1, paddingBottom: 120}}>
               <div style={{marginBottom: 30, textAlign: 'center'}} >
                 <h1>React Launch Gauge</h1>
@@ -380,69 +337,160 @@ class Demo extends React.Component {
               </div>
               <div style={{marginBottom: 30, textAlign: 'center'}}>
                 <h3>{`Inspired by SpaceX's telemetry display.`}</h3>
-                <h4>{`Depends on d3-shape from D3.js`}</h4>
+                <h4>{`Depends on D3.js and React Motion`}</h4>
               </div>
+
               <div style={{display: 'flex', justifyContent: 'center'}}>
-              <Gauge
-                title="SPEED"
+              <CircleGauge
                 unit="km/h"
-                titleClass='fadeTitle'
                 style={{backgroundColor: mainBkg}}
                 titleStyle={{backgroundColor: titleBkg}}
                 progressStyle={{fill: progressColor}}
-                wrapStyle={{margin: ''}}
+                wrapStyle={{margin: '0px 10px'}}
                 value={gaugeVal}
                 decimal={0}
                 high={40000}
                 max={45000} />
-              <Gauge
-                title="ALTITUDE"
-                unit="km"
-                titleClass='fadeTitle fadeTitleAfter'
+              <CircleGauge
+                unit="km/h"
+                startAngle={240}
+                endAngle={480}
+                labelPos={'center'}
                 style={{backgroundColor: mainBkg}}
                 titleStyle={{backgroundColor: titleBkg}}
-                progressStyle={{fill: progressColor}}
-                value={gaugeVal / 50}
-                decimal={0}
-                high={1100}
-                max={1100} />
-              </div>
-              <div style={{textAlign: 'center'}}>
-                <button
-                 style={BTN_STYLE}
-                 className='btn btn-primary'
-                 onClick={this.setData.bind(null, 'gaugeVal', 0)}>
-                 0
-                 </button>
-                 <button
-                 style={BTN_STYLE}
-                 className='btn btn-primary'
-                 onClick={this.setData.bind(null, 'gaugeVal', 10000)}>
-                  10000
-                 </button>
-                 <button
-                 style={BTN_STYLE}
-                  className='btn btn-primary'
-                  onClick={this.setData.bind(null, 'gaugeVal', 20000)}>
-                   20000
-                  </button>
-              </div>
-              <input
-                type='range'
-                style={{padding: 10, maxWidth: 400, margin: 'auto'}}
+                progressStyle={{fill: '#00aa44'}}
+                wrapStyle={{margin: '0px 10px'}}
                 value={gaugeVal}
-                max={45000}
-                onChange={this.handleDataChange.bind(null, 'gaugeVal')} />
-              <div className='paper' style={{color: 'black'}}>
-              <div className='' style={SECTION_STYLE}>
-                <h3 style={SECTION_TITLE_STYLE}>{"<Gauge />"}</h3>
-                <h4 style={SECTION_TITLE_STYLE}>{"Usage"}</h4>
-                <div style={{margin: '10px 0'}}dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
-                <h4 style={SECTION_TITLE_STYLE}>{"Props"}</h4>
-                {generalProps}
+                decimal={0}
+                high={40000}
+                max={45000} />
+              <CircleGauge
+                unit="km/h"
+                startAngle={180}
+                endAngle={-60}
+                labelPos={'left'}
+                style={{backgroundColor: mainBkg}}
+                titleStyle={{backgroundColor: titleBkg}}
+                progressStyle={{fill: '#F44336'}}
+                wrapStyle={{margin: '0px 10px'}}
+                value={gaugeVal}
+                decimal={0}
+                high={40000}
+                max={45000} />
               </div>
+
+              <div
+                className='glassBkg flex pad2'
+                style={{ maxWidth: 400, textAlign: 'center', justifyContent: 'center', margin: '30px auto'}}>
+                <button
+                style={BTN_STYLE}
+                 className='btn btn-large btn-primary'
+                 onClick={this.getRandoms}>
+                  Randomize Values
+                 </button>
               </div>
-            </div>
+
+                <div className='glassBkg'>
+                  <div className='pad2'>
+                    <div className='flex' style={{fontSize: 24, marginBottom: 20}}>
+                     <span style={{fontSize: 24, margin: 'auto 0px'}}>
+                      {'<CircleGauge />'}
+                     </span>
+                      <div style={{marginLeft: 'auto'}}>
+                      <button
+                        className={'btn '+ (showCode['circleGauge'] ? 'btn-disabled' : 'btn-primary')}
+                        onClick={this.toggleCode.bind(null, 'circleGauge')}>
+                        {showCode['circleGauge'] ? 'Hide Code' : 'Show Code'}
+                      </button>
+                      </div>
+                    </div>
+                    <div className={'accordion ' + (!showCode['circleGauge'] && 'accordionClosed')}>
+                      <div className='accordionContent'>
+                        <div
+                          style={{margin: '10px 0'}}
+                          dangerouslySetInnerHTML={{__html: marked(stringThing)}} />
+                      </div>
+                    </div>
+                    <h3 style={SECTION_TITLE_STYLE}>{"Properties"}</h3>
+                    {generalProps}
+                  </div>
+                </div>
+                <div style={{display: 'flex', margin: '30px 0px', justifyContent: 'center'}}>
+                <BarGauge
+                  progressColor={'#F44336'}
+                  wrapStyle={{margin: '0px 10px'}}
+                  style={{backgroundColor: mainBkg}}
+                  value={bars[0]}
+                  max={100} />
+                <BarGauge
+                  wrapStyle={{margin: '0px 10px'}}
+                  progressColor={'#00aa44'}
+                  style={{backgroundColor: mainBkg}}
+                  value={bars[1]}
+                  max={100} />
+                <BarGauge
+                  wrapStyle={{margin: '0px 10px'}}
+                  style={{backgroundColor: mainBkg}}
+                  value={bars[2]}
+                  max={100} />
+                <div>
+                  <BarGauge
+                    progressColor={'#F44336'}
+                    direction={'horizontal'}
+                    wrapStyle={{margin: '0px 10px'}}
+                    value={bars[0]}
+                    max={100} />
+                  <BarGauge
+                    wrapStyle={{margin: '0px 10px'}}
+                    direction={'horizontal'}
+                    progressColor={'#00aa44'}
+                    value={bars[1]}
+                    max={100} />
+                  <BarGauge
+                    wrapStyle={{margin: '0px 10px'}}
+                    direction={'horizontal'}
+                    value={bars[2]}
+                    max={100} />
+                </div>
+                </div>
+                <div
+                  className='glassBkg flex pad2'
+                  style={{ maxWidth: 400, textAlign: 'center', justifyContent: 'center', margin: '30px auto'}}>
+                  <button
+                  style={BTN_STYLE}
+                   className='btn btn-large btn-primary'
+                   onClick={this.getRandoms}>
+                    Randomize Values
+                   </button>
+                </div>
+                <div className='glassBkg'>
+                  <div className='pad2'>
+                    <div className='flex' style={{fontSize: 24, marginBottom: 20}}>
+                     <span style={{fontSize: 24, margin: 'auto 0px'}}>
+                      {'<BarGauge />'}
+                     </span>
+                      <div style={{marginLeft: 'auto'}}>
+                      <button
+                        className={'btn '+ (showCode['barGauge'] ? 'btn-disabled' : 'btn-primary')}
+                        onClick={this.toggleCode.bind(null, 'barGauge')}>
+                        {showCode['barGauge'] ? 'Hide Code' : 'Show Code'}
+                      </button>
+                      </div>
+                    </div>
+                    <div className={'accordion ' + (!showCode['barGauge'] && 'accordionClosed')}>
+                      <div className='accordionContent'>
+                        <div
+                          style={{margin: '10px 0'}}
+                          dangerouslySetInnerHTML={{__html: marked(BarGaugeCodeString)}} />
+                      </div>
+                    </div>
+                    <h3 style={SECTION_TITLE_STYLE}>{"Properties"}</h3>
+                    {barGaugePropTable}
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
   }

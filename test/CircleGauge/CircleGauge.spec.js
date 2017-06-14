@@ -1,13 +1,13 @@
 import React from 'react';
-import Gauge from '../src/Gauge';
+import CircleGauge from '../../src/CircleGauge';
 import { mount, shallow, render } from 'enzyme';
 import PropTypes from 'prop-types';
 
-describe('(Component) Gauge', () => {
+describe('(Component) CircleGauge', () => {
   let _component;
 
   beforeEach(() => {
-    _component = shallow(<Gauge height={100} value={42} max={100} />);
+    _component = shallow(<CircleGauge height={100} value={42} max={100} />);
   })
 
   it('Should exist.', () => {
@@ -21,6 +21,5 @@ describe('(Component) Gauge', () => {
       expect( _component.props().title ).to.be.defined;
     })
   })
-
 
 })

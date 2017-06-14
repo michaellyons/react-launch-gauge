@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { arc } from 'd3-shape'
 
-export default class GaugePath extends React.Component {
+export default class GaugeArc extends React.Component {
   static propTypes = {
     width:PropTypes.number,
     height:PropTypes.number,
