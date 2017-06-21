@@ -343,6 +343,7 @@ class Demo extends React.Component {
               <div style={{display: 'flex', justifyContent: 'center'}}>
               <CircleGauge
                 unit="km/h"
+                title={"Hello"}
                 style={{backgroundColor: mainBkg}}
                 titleStyle={{backgroundColor: titleBkg}}
                 progressStyle={{fill: progressColor}}
@@ -353,6 +354,7 @@ class Demo extends React.Component {
                 max={45000} />
               <CircleGauge
                 unit="km/h"
+                title={<span>Dear</span>}
                 startAngle={240}
                 endAngle={480}
                 labelPos={'center'}

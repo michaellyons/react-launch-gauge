@@ -18,9 +18,6 @@ export default class CircleGauge extends React.Component {
     endAngle: PropTypes.number,
     unit: PropTypes.string,
     labelPos: PropTypes.string,
-    title: PropTypes.string,
-    titleStyle: PropTypes.object,
-    titleClass: PropTypes.string,
     textStyle: PropTypes.object,
     mainBkg: PropTypes.string,
     progressBkg: PropTypes.string,
@@ -170,9 +167,6 @@ export default class CircleGauge extends React.Component {
       wrapStyle,
       style,
       mainBkg,
-      title,
-      titleStyle,
-      titleClass,
       textStyle,
       progressStyle,
       progressBkg,
@@ -196,20 +190,8 @@ export default class CircleGauge extends React.Component {
       { number: high, color: progressBkg },
       { number: max - high, color: highColor }
     ]
-    var titleDiv = title
-              ? <div
-                className={titleClass}
-                style={
-                 Object.assign(
-                   {},
-                   (!titleClass && { background: '#666', padding: '4px 12px', color: 'white', fontSize: 24 }),
-                   titleStyle)}>
-                {title}
-              </div>
-              : null
     return (
-      <div style={{ width: width, ...wrapStyle }} ref={'wrap'}>
-        {titleDiv}
+      <div style={{ width: width, height:height, ...wrapStyle }} ref={'wrap'}>
         <svg
           id={this.props.id}
           width={this.props.width}

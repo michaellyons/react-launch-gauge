@@ -17,9 +17,6 @@ describe('(Component) CircleGauge', () => {
     it('Should have a height property.', () => {
       expect( _component.props().height ).to.be.defined;
     })
-    it('Should could a title property.', () => {
-      expect( _component.props().title ).to.be.defined;
-    })
   })
 
 })
