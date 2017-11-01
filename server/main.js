@@ -42,6 +42,7 @@ if (project.env === 'development') {
   // (ignoring file requests). If you want to implement universal
   // rendering, you'll want to remove this middleware.
   app.use('*', function (req, res, next) {
+    console.log("Get File!");
     const filename = path.join(compiler.outputPath, 'index.html')
     compiler.outputFileSystem.readFile(filename, (err, result) => {
       if (err) {

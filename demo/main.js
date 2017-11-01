@@ -237,6 +237,13 @@ class Demo extends React.Component {
         desc: 'Height of the Container div',
       },
       {
+        name: 'thickness',
+        key: 'thickness',
+        default: '10',
+        type: 'string|number',
+        desc: 'Thickness of Gauge (px)',
+      },
+      {
         name: 'startAngle',
         key: 'startAngle',
         default: '180',
@@ -286,10 +293,18 @@ class Demo extends React.Component {
         component: null
       },
       {
+        name: 'Decorate',
+        key: 'decorate',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Decorates Gauge in Space-age fashion',
+        component: null
+      },
+      {
         name: 'mainBkg',
         key: 'mainBkg',
         type: 'string',
-        default: '#333333',
+        default: 'none',
         desc: 'Color for the chart\'s background.',
         value: mainBkg,
         component: this.buildColorDiv('mainBkg', mainBkg)
@@ -356,9 +371,9 @@ class Demo extends React.Component {
                 unit="km/h"
                 title={<span>Dear</span>}
                 startAngle={240}
+                decorate={true}
                 endAngle={480}
                 labelPos={'center'}
-                style={{backgroundColor: mainBkg}}
                 titleStyle={{backgroundColor: titleBkg}}
                 progressStyle={{fill: '#00aa44'}}
                 wrapStyle={{margin: '0px 10px'}}

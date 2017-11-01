@@ -9,6 +9,7 @@ export default class BarGauge extends React.Component {
     height: PropTypes.number,
     max: PropTypes.number,
     value: PropTypes.any,
+    decorate: PropTypes.bool,
     decimal: PropTypes.number,
     unit: PropTypes.string,
     title: PropTypes.string,
@@ -30,6 +31,7 @@ export default class BarGauge extends React.Component {
     max: 100,
     high: 90,
     decimal: 0,
+    decorate: false,
     direction: 'vertical',
     unit: '%',
     progressColor: '#0288d1',
@@ -83,6 +85,7 @@ export default class BarGauge extends React.Component {
       value,
       titleStyle,
       titleClass,
+      decorate,
       textStyle,
       progressStyle,
       progressColor,
@@ -103,6 +106,21 @@ export default class BarGauge extends React.Component {
                 {title}
               </div>
               : null
+    let decoration = decorate && [
+      <rect
+        x={1}
+        y={1}
+        width={barSizes[0] - 2}
+        height={barSizes[1] - 2}
+        fill={'transparent'}
+        stroke={'rgb(170, 170, 170)'}
+        strokeWidth={'2px'} />,
+      <polygon
+        points={`${barSizes[0] * 0.75},${barSizes[1]} \
+        ${barSizes[0] * 0.8},${barSizes[1] * 0.95}  ${barSizes[0]},${barSizes[1] * 0.95} \
+        ${barSizes[0]},${barSizes[1]} ${barSizes[0] * 0.75},${barSizes[1]}`}
+        style={{ fill: ('#aaa'), stroke:'', strokeWidth:1 }} />
+    ]
     return (
       <div style={{ width: barSizes[0], ...wrapStyle }} ref={'wrap'}>
         {titleDiv}
@@ -156,19 +174,7 @@ export default class BarGauge extends React.Component {
             style={textStyle}>
             {this.props.unit}
           </text>
-          <rect
-            x={1}
-            y={1}
-            width={barSizes[0] - 2}
-            height={barSizes[1] - 2}
-            fill={'transparent'}
-            stroke={'rgb(170, 170, 170)'}
-            strokeWidth={'2px'} />
-          <polygon
-            points={`${barSizes[0] * 0.75},${barSizes[1]} \
-            ${barSizes[0] * 0.8},${barSizes[1] * 0.95}  ${barSizes[0]},${barSizes[1] * 0.95} \
-            ${barSizes[0]},${barSizes[1]} ${barSizes[0] * 0.75},${barSizes[1]}`}
-            style={{ fill: ('#aaa'), stroke:'', strokeWidth:1 }} />
+          {decoration}
         </svg>
       </div>
     )

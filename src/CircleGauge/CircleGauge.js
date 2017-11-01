@@ -35,6 +35,7 @@ export default class CircleGauge extends React.Component {
     height: 170,
     max: 100,
     high: 90,
+    thickness: 10,
     startAngle: 180,
     endAngle: 420,
     decimal: 2,
@@ -42,7 +43,7 @@ export default class CircleGauge extends React.Component {
     labelPos: 'right',
     progressColor: '#FFFFFF',
     progressBkg: '#666',
-    mainBkg: '#333',
+    mainBkg: false,
     highColor: 'crimson',
     id: 'launch-gauge'
   };
@@ -167,6 +168,7 @@ export default class CircleGauge extends React.Component {
       wrapStyle,
       style,
       mainBkg,
+      decorate,
       textStyle,
       progressStyle,
       progressBkg,
@@ -190,6 +192,22 @@ export default class CircleGauge extends React.Component {
       { number: high, color: progressBkg },
       { number: max - high, color: highColor }
     ]
+    let decoration = decorate &&
+                      [
+                        <rect
+                          x={1}
+                          y={1}
+                          width={width - 2}
+                          height={height - 2}
+                          fill={'transparent'}
+                          stroke={'rgb(170, 170, 170)'}
+                          strokeWidth={'2px'} />,
+                        <polygon
+                          points={`${width * 0.75},${height} \
+                          ${width * 0.8},${height * 0.95}  ${width},${height * 0.95} \
+                          ${width},${height} ${width * 0.75},${height}`}
+                          style={{ fill: ('#aaa'), stroke:'', strokeWidth:1 }} />
+                      ]
     return (
       <div style={{ width: width, height:height, ...wrapStyle }} ref={'wrap'}>
         <svg
@@ -200,11 +218,13 @@ export default class CircleGauge extends React.Component {
           <GaugeArc
             width={this.props.width}
             height={this.props.height}
+            thickness={this.props.thickness}
             pie={this.pie}
             color={this.color}
             data={baseData} />
           <GaugeArc
             width={this.props.width}
+            thickness={this.props.thickness}
             height={this.props.height}
             pie={this.pie}
             style={progressStyle}
@@ -236,19 +256,7 @@ export default class CircleGauge extends React.Component {
             style={textStyle}>
             {this.props.unit}
           </text>
-          <rect
-            x={1}
-            y={1}
-            width={width - 2}
-            height={height - 2}
-            fill={'transparent'}
-            stroke={'rgb(170, 170, 170)'}
-            strokeWidth={'2px'} />
-          <polygon
-            points={`${width * 0.75},${height} \
-            ${width * 0.8},${height * 0.95}  ${width},${height * 0.95} \
-            ${width},${height} ${width * 0.75},${height}`}
-            style={{ fill: ('#aaa'), stroke:'', strokeWidth:1 }} />
+
         </svg>
       </div>
     )
