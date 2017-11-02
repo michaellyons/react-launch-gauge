@@ -1,6 +1,6 @@
 {
   "name": "react-launch-gauge",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "lib/index.js",
   "license": "MIT",
   "repository": {
@@ -24,7 +24,8 @@
     "test:dev": "npm run test -- --watch",
     "deploy": "better-npm-run deploy",
     "deploy:dev": "better-npm-run deploy:dev",
-    "deploy:prod": "better-npm-run deploy:prod"
+    "deploy:prod": "better-npm-run deploy:prod",
+    "deploy:demo": "better-npm-run deploy:demo"
   },
   "betterScripts": {
     "publish": {

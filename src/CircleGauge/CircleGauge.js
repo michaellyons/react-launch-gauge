@@ -13,7 +13,9 @@ export default class CircleGauge extends React.Component {
     max: PropTypes.number,
     high: PropTypes.number,
     value: PropTypes.any,
+    decorate: PropTypes.bool,
     decimal: PropTypes.number,
+    thickness: PropTypes.number,
     startAngle: PropTypes.number,
     endAngle: PropTypes.number,
     unit: PropTypes.string,
@@ -193,21 +195,21 @@ export default class CircleGauge extends React.Component {
       { number: max - high, color: highColor }
     ]
     let decoration = decorate &&
-                      [
-                        <rect
-                          x={1}
-                          y={1}
-                          width={width - 2}
-                          height={height - 2}
-                          fill={'transparent'}
-                          stroke={'rgb(170, 170, 170)'}
-                          strokeWidth={'2px'} />,
-                        <polygon
-                          points={`${width * 0.75},${height} \
+      [
+        <rect
+          x={1}
+          y={1}
+          width={width - 2}
+          height={height - 2}
+          fill={'transparent'}
+          stroke={'rgb(170, 170, 170)'}
+          strokeWidth={'2px'} />,
+        <polygon
+          points={`${width * 0.75},${height} \
                           ${width * 0.8},${height * 0.95}  ${width},${height * 0.95} \
                           ${width},${height} ${width * 0.75},${height}`}
-                          style={{ fill: ('#aaa'), stroke:'', strokeWidth:1 }} />
-                      ]
+          style={{ fill: ('#aaa'), stroke:'', strokeWidth:1 }} />
+      ]
     return (
       <div style={{ width: width, height:height, ...wrapStyle }} ref={'wrap'}>
         <svg
@@ -256,7 +258,9 @@ export default class CircleGauge extends React.Component {
             style={textStyle}>
             {this.props.unit}
           </text>
-
+          {
+            decoration
+          }
         </svg>
       </div>
     )
