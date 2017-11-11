@@ -45,7 +45,7 @@ export default class CircleGauge extends React.Component {
     labelPos: 'right',
     progressColor: '#FFFFFF',
     progressBkg: '#666',
-    mainBkg: false,
+    mainBkg: '',
     highColor: 'crimson',
     id: 'launch-gauge'
   };
@@ -197,6 +197,7 @@ export default class CircleGauge extends React.Component {
     let decoration = decorate &&
       [
         <rect
+          key={'border'}
           x={1}
           y={1}
           width={width - 2}
@@ -205,6 +206,7 @@ export default class CircleGauge extends React.Component {
           stroke={'rgb(170, 170, 170)'}
           strokeWidth={'2px'} />,
         <polygon
+          key={'fancy_shape'}
           points={`${width * 0.75},${height} \
                           ${width * 0.8},${height * 0.95}  ${width},${height * 0.95} \
                           ${width},${height} ${width * 0.75},${height}`}

@@ -222,6 +222,15 @@ class Demo extends React.Component {
         component: this.buildColorDiv('mainBkg', mainBkg)
       },
       {
+        name: 'Unit',
+        key: 'unit',
+        type: 'string',
+        default: '',
+        desc: 'Unit Label',
+        value: 'km/h',
+        component: this.buildColorDiv('mainBkg', mainBkg)
+      },
+      {
         name: 'width',
         key: 'width',
         type: 'string|number',
