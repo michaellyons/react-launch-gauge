@@ -1,6 +1,6 @@
 {
   "name": "react-launch-gauge",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "lib/index.js",
   "license": "MIT",
   "repository": {
@@ -105,8 +105,8 @@
   },
   "peerDependencies": {
     "prop-types": "^15.5.8",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react": "^15.5.4 || ^16.0.0",
+    "react-dom": "^15.5.4 || ^16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -155,7 +155,8 @@
     "marked": "^0.3.6",
     "mocha": "^3.2.0",
     "moment": "^2.18.1",
-    "node-sass": "^4.5.2",
+    "node-sass": "^4.9.0",
+    "nodemon": "^1.17.3",
     "npm-install-webpack-plugin": "^4.0.4",
     "path": "^0.12.7",
     "phantomjs": "^2.1.7",
