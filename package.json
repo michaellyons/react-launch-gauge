@@ -152,7 +152,7 @@
     "karma-mocha-reporter": "^2.2.3",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-webpack-with-fast-source-maps": "^1.10.1",
-    "marked": "^0.3.6",
+    "marked": "^4.0.10",
     "mocha": "^3.2.0",
     "moment": "^2.18.1",
     "node-sass": "^4.9.0",
